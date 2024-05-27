@@ -140,7 +140,7 @@ const TelaCadastro = () => {
                             <div className="div-input-with-icons">
                                 <CalendarMonthOutlinedIcon sx={{ position:'absolute', left: '0.5rem', width:'1.5rem', height:'1.2rem', color: '#A4A4A4'}}/>
                                 <input 
-                                    className="input-form"
+                                    className="input-form "
                                     type="date"
                                     placeholder="dd/nn/mmmm"
                                     id="nascimento" />
@@ -150,8 +150,9 @@ const TelaCadastro = () => {
                             <label className="label-input-form sm:text-lg ">Gênero</label>
                             <div className="div-input-with-icons">
                                 <WcOutlinedIcon sx={{ position:'absolute', left: '0.5rem', width:'1.5rem', height:'1.2rem', color: '#A4A4A4'}}/>
-                                <select className="input-form" id="genero"   >
-                                    <option>Masculino</option>
+                                <select className="input-form " id="genero">
+                                    <option value=""></option>
+                                    <option >Masculino</option>
                                     <option>Feminino</option>
                                 </select>
                             </div>
