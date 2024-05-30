@@ -42,12 +42,12 @@ const Eventos = () => {
             <HeaderHome>
                
                 <img src="images/img-conectech.svg" className='block sm:hidden w-12 h-12 mp:ml-28 mm:ml-44' alt="" />
-                <img src="images/img-logo-pree.png" className='mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-28  w-40' alt="" onClick={goToHomePage} />
+                <img src="images/img-logo-pree.png" className='mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-32  w-40' alt="" onClick={goToHomePage} />
                 <img className='w-8 object-cover cursor-pointer mp:mt-2  mp:-mr-8 mm:mr-0 md:-mr-8 lg:mr-14 ' src='images/user.png'/>
             </HeaderHome>
-            <div className="mp:ml-4 mt-24 flex flex-col items-center w-full ">
+            <div className="mp:ml-4 mt-24 md:ml-28 flex flex-col items-center w-full ">
                     <div className="w-full flex justify-between items-center">
-                        <div className="flex items-center gap-2  xl:ml-3 xl:mt-5 3xl:ml-0 cursor-pointer" onClick={goToHomePage}>
+                        <div className="flex items-center gap-2  xl:ml-3 xl:mt-5 3xl:ml-14 cursor-pointer" onClick={goToHomePage}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                                 className="w-5 h-5 sm:h-6 sm:w-6 lg:w-8 lg:h-8 3xl:h-12 3xl:w-12 text-[#4A91A5] ">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -62,7 +62,7 @@ const Eventos = () => {
                         ))}  
                                             
                     </div>
-                    <div className='grid grid-cols-6 xl:grid-cols-8 gap-3 mt-3 lg:mt-10 -ml-5 mm:-ml-4  w-full 2xl:mb-10'>
+                    <div className='grid grid-cols-6 xl:grid-cols-8 gap-3 mt-3 lg:mt-10 -ml-5 mm:-ml-4  w-full lg:w-[90%] lg:-ml-16 2xl:mb-10'>
                         {data.map((evento) => (
                                 <div className='col-span-6  xl:col-span-2 flex ' key={evento.id}>
                                     <Evento 

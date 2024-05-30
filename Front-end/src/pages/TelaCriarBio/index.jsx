@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import  { useState } from 'react';
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
@@ -58,6 +58,7 @@ const TelaCriarBio = () => {
         return axios.put(`http://localhost:8080/users/${localStorage.getItem('userId')}`, user)
             .then(response => {
                 notifySucess('Conta atualizada com sucesso!');
+                console.log(response)
                 setTimeout(() => {
                     navigate('/home');
                 }, 5000);
@@ -93,6 +94,7 @@ const TelaCriarBio = () => {
             .then(data => {
                 notifySucess('Imagem de perfil atualizada com sucesso!');
                 loadImage(localStorage.getItem('userId'));
+                console.log(data)
             })
             .catch(error => {
                 notifyError("Não foi possível atualizar a imagem de perfil! Tente novamente.");

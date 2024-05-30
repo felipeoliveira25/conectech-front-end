@@ -11,6 +11,7 @@ const Favoritos = () => {
         const interesses = localStorage.getItem('meusInteresses');
         if(interesses){
             setMeusInteresses(JSON.parse(interesses))
+            console.log(interesses)
         }
         
         
@@ -27,20 +28,20 @@ const Favoritos = () => {
         <div className='w-full min-h-screen overflow-y-hidden flex bg-[#fbfbfb]'>
             <Sidebar/>
             <HeaderHome>
-                <img src="images/img-conectech.svg" className='block sm:hidden w-12 h-12 mp:ml-28 mm:ml-44' alt="" />
-                <img src="images/img-logo-pree.png" className='mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-28  w-40' alt="" />
-                <img className='w-8 object-cover cursor-pointer mp:mt-2  mp:-mr-8 mm:mr-0 md:-mr-8 lg:mr-14 ' src='images/user.png' />
+                <img src="images/img-conectech.svg" className='block sm:hidden w-12 h-12 mp:ml-28 mm:ml-36' alt="" />
+                <img src="images/img-logo-pree.png" className='ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-32  w-40' alt="" />
+                <img className='w-8 object-cover cursor-pointer mp:mt-2  mp:-mr-4 mm:-mr-5 md:-mr-8 lg:mr-14 ' src='images/user.png'/>
             </HeaderHome>
-            <div className="mp:ml-24 mt-24 flex flex-col items-center">
+            <div className=" mt-24 md:ml-28 mm:w-full flex flex-col items-center">
                 <div className="w-full flex mp:flex-col mp:items-start justify-between items-center">
-                    <div className="flex items-center gap-2  xl:ml-3 xl:mt-5 3xl:ml-0 cursor-pointer" onClick={goToHomePage}>
+                    <div className="flex items-center gap-2 ml-3 xl:ml-3 xl:mt-5 3xl:ml-0 cursor-pointer" onClick={goToHomePage}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                             className="w-5 h-5 sm:h-6 sm:w-6 lg:w-8 lg:h-8 3xl:h-12 3xl:w-12 text-[#4A91A5] ">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                         </svg>
                         <p className="text-sm sm:text-base xl:text-lg  3xl:text-2xl font-poppins text-[#101010] font-medium">Eventos Favoritos</p>
                     </div>
-                    <div className="flex gap-3 items-center mt-3 w-full justify-end pr-5 md:pr-0 xl:pr-20 2xl:pr-5 mb-4">
+                    <div className="flex gap-3 items-center mt-3 w-full justify-end ml-7 mm:-ml-4 md:pr-0 xl:pr-20 2xl:pr-5 mb-4">
                     <button className="flex justify-center items-center gap-2 bg-[#e9f0f2] py-2 px-3 md:px-8 2xl:px-10 3xl:py-3 3xl:px-14 rounded-md ">
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                             className="w-5 h-5 text-[#4A91A5] 3xl:w-6 3xl:h-6">
@@ -65,9 +66,9 @@ const Favoritos = () => {
                         ))}  
                                             
                 </div>
-                <div className='grid grid-cols-6 xl:grid-cols-8 gap-3 mt-3 lg:mt-10 -ml-5 mm:-ml-4  w-full 2xl:mb-10'>
+                <div className='grid grid-cols-6   xl:grid-cols-8 gap-3 mt-3 lg:mt-10  mm:-ml-4 w-full mm:w-[93%] 2xl:mb-10'>
                     {data.map((evento) => (
-                            <div className='col-span-6  xl:col-span-2 flex ' key={evento.id}>
+                            <div className='col-span-6 ml-5 mm:ml-2 xl:col-span-2 flex w-full' key={evento.id}>
                                  <Evento 
                                     titulo={evento.title} 
                                     imagem={evento.image} 

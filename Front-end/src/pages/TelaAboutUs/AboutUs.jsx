@@ -16,12 +16,12 @@ const TelaAboutUs = () => {
            <Sidebar/>
            <HeaderHome>
                 <img src="images/img-conectech.svg" className='block sm:hidden w-12 h-12 mp:ml-28 mm:ml-44' alt="" />
-                <img src="images/img-logo-pree.png" className='mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-28  w-40' alt="" />
+                <img src="images/img-logo-pree.png" className='mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-32  w-40' alt="" />
                 <img className='w-8 object-cover cursor-pointer mp:mt-2  mp:-mr-8 mm:mr-0 md:-mr-8 lg:mr-14 ' src='images/user.png' />
            </HeaderHome>
-           <div className="mp:ml-24 mt-24 grid grid-cols-3 items-center">
+           <div className="ml-3 mt-24 md:ml-32 grid grid-cols-3 items-center">
                 <div className="w-full flex justify-between items-center col-span-3">
-                    <div className="flex items-center gap-2  xl:ml-10 xl:mt-5 3xl:ml-24 cursor-pointer" onClick={goToHomePage}>
+                    <div className="flex items-center gap-2  xl:ml-10 xl:mt-5 3xl:ml-7 cursor-pointer" onClick={goToHomePage}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
                             className="w-5 h-5 sm:h-6 sm:w-6 lg:w-8 lg:h-8 3xl:h-12 3xl:w-12 text-[#4A91A5] ">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
@@ -30,7 +30,7 @@ const TelaAboutUs = () => {
                     </div>
 
                 </div>
-                <div className="flex flex-col mt-9 ml-2 mb-14 col-span-3 gap-3 pl-2 border-l-2 border-[#074261] mg:w-[65%] lg:w-full lg:col-span-1 xl:ml-14 2xl:ml-14 3xl:w-[60%] ">
+                <div className="flex flex-col mt-9 ml-2 mb-14 col-span-3 gap-3 pl-2 border-l-2 border-[#074261] mm:w-[70%] mg:w-[65%] lg:w-full lg:col-span-1 xl:ml-14 2xl:ml-14 3xl:w-[60%] ">
                     <p className="text-base font-poppins font-medium 3xl:text-xl">Integrantes</p>
                     <ul className="grid grid-cols-2 text-sm font-poppins 3xl:text-base">
                         <li>Lara Nunes</li>

@@ -39,15 +39,15 @@ const DestaquesForum = () => {
     };
     
     return(
-        <div className="mp:ml-5 md:ml-28 mt-8 lg:-mt-10 xl:-mt-14 lg:ml-[6.5rem] flex flex-col items-center justify-center overflow-x-hidden">
-            <div className="flex w-full font-poppins items-center justify-around mp:-ml-5 mm:-ml-10 mg:-ml-6 sm:-ml-0 lg:gap-[2rem] lg:ml-4 xl:gap-[12rem] xl:ml-16 2xl:gap-[15rem] 3xl:gap-[47rem] ">
-                <p className="font-poppins font-medium mp:text-sm w-[50%] text-base sm:text-lg mg:-ml-5 2xl:text-2xl sm:-ml-8 md:-ml-16 md:text-xl text-[#363636]">Veja os destaques no fórum</p>
-                <p className="mp:text-[10px] mm:text-[11px] sm:text-sm md:text-base md:mr-3 sm:mr-0 2xl:text-lg  text-[#747688] font-poppins cursor-pointer" onClick={goToForum}>Ver mais</p>
+        <div className=" md:ml-28 mt-8 lg:-mt-10 xl:-mt-14 2xl:-mt-10 3xl:-mt-14 lg:ml-[6.5rem] flex flex-col items-center justify-center overflow-x-hidden">
+            <div className="flex w-[95%] font-poppins items-center ml-8 sm:ml-24  ">
+                <p className="font-poppins font-medium mp:text-sm w-[50%] text-base mr-20 mm:mr-28 mg:mr-32 sm:mr-44 lg:mr-52 xl:mr-[17rem] 2xl:mr-[19rem] sm:text-base   2xl:text-lg 3xl:text-xl   sm:-ml-8   text-[#363636]">Veja os destaques no fórum</p>
+                <p className="mp:text-[10px] mm:text-[11px] sm:text-xs  md:mr-3 sm:mr-0 2xl:text-sm 3xl:text-base  text-[#747688] font-poppins cursor-pointer" onClick={goToForum}>Ver mais</p>
             </div>
-            <div className="grid w-full grid-cols-1 gap-10 mt-3 mp:-ml-3 sm:ml-3 md:-ml-2 ">
+            <div className="grid w-[95%] -ml-3 grid-cols-1 gap-4 mt-3 md:w-[100%] xl:w-[93%] 2xl:w-[90%] 3xl:w-[80%] 3xl:mr-56 3xl:mt-6 2xl:mr-20 xl:mr-8  md:ml-3 ">
                 {dataPost.map((post, index) => {
                     return(
-                        <div className="grid grid-cols-4 gap-3 bg-[#fff] mb-2 rounded-xl items-center justify-center shadow-md md:w-[90%]  mp:ml-4 mp:mr-7 mg:mr-9 px-2 py-3 xl:w-[95%] " key={index}>
+                        <div className="grid grid-cols-4 gap-3 bg-[#ffffff] mb-2 rounded-xl items-center justify-center shadow-md md:w-[90%]  mp:ml-4 mp:mr-7 mg:mr-9 px-2 py-3 xl:w-[95%] " key={index}>
                             <div className="col-span-4 flex items-center justify-between">
                                 <div id="div-info-user" className=" flex items-center  gap-2 md:gap-4 ">
                                     <img className="rounded-full object-cover w-6 h-6 md:w-10 md:h-10 3xl:w-16 3xl:h-16" src={post.imagemPerfil}/>

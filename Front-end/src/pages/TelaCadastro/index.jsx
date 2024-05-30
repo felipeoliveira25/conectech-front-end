@@ -1,3 +1,4 @@
+
 import Header from "../../components/Header"
 import ImagemLogo from "../../components/ImagemLogo"
 import PersonOutlineRoundedIcon from '@mui/icons-material/PersonOutlineRounded';
@@ -67,7 +68,7 @@ const TelaCadastro = () => {
             setUser(newUser)
             console.log(newUser)
         }
-    },[newUser])
+    })
 
     const integracaoAPI = (user) => {
         axios.post('http://localhost:8080/users', {
@@ -80,6 +81,7 @@ const TelaCadastro = () => {
         .then(response => {
             // Extrair o ID do usuário retornado do JSON
             const userId = response.data.id;
+            console.log(response.data);
             
             // Armazenar as informações do usuário no sessionStorage
             localStorage.setItem('userId', userId);
@@ -87,7 +89,7 @@ const TelaCadastro = () => {
             localStorage.setItem('userEmail', user.email);
             
             notifySucess('Conta criada com sucesso!');
-            console.log(response.data);
+            
     
             setTimeout(() => {
                 navigate('/interesses');
@@ -149,7 +151,7 @@ const TelaCadastro = () => {
                             <div className="div-input-with-icons">
                                 <CalendarMonthOutlinedIcon sx={{ position:'absolute', left: '0.5rem', width:'1.5rem', height:'1.2rem', color: '#A4A4A4'}}/>
                                 <input 
-                                    className="input-form text-[#A4A4A4]"
+                                    className="input-form"
                                     type="date"
                                     placeholder="dd/nn/mmmm"
                                     id="nascimento" />

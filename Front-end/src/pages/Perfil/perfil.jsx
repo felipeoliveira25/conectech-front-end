@@ -95,11 +95,11 @@ const Perfil = () => {
       <Sidebar />
       <HeaderHome>
         {/* Imagem do User Pequena */}
-        <img src={profileImage || "images/user.png"} className="block sm:hidden w-12 h-12 mp:ml-28 mm:ml-44" alt="User" />
+        <img src={profileImage || "images/user.png"} className="block sm:hidden w-12 h-12 mp:ml-28 mm:ml-44 rounded-full" alt="User" />
         {/* Logo do CONECTECH */}
-        <img src="images/img-logo-pree.png" className="mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-28 w-40" alt="Logo" />
+        <img src="images/img-logo-pree.png" className="mp:ml-24 mp:w-32 mm:ml-28 hidden sm:block sm:ml-40 md:ml-52 lg:ml-32 w-40" alt="Logo" />
         {/* Imagem do User Pequena */}
-        <img className="w-8 object-cover cursor-pointer mp:mt-2 mp:-mr-8 mm:mr-0 md:-mr-8 lg:mr-14" src={profileImage || 'images/user.png'} alt="Profile" />
+        <img className="w-10 object-cover cursor-pointer mp:mt-2 mp:-mr-8 mm:mr-0 md:-mr-8 lg:mr-14 rounded-full" src={profileImage || 'images/user.png'} alt="Profile" />
       </HeaderHome>
       <div className="mp:ml-24 mt-24 flex flex-col items-center">
         <div className="w-full flex justify-between items-center">
@@ -114,7 +114,7 @@ const Perfil = () => {
           </svg>
         </div>
         <div className="w-full flex flex-col items-center gap-3 mt-8 lg:mt-12 xl:mt-0">
-          <img src={profileImage || "images/user.png"} className="w-16 h-16 md:w-20 md:h-20 lg:w-28 lg:h-28 3xl:h-36 3xl:w-36" alt="Profile" />
+          <img src={profileImage || "images/user.png"} className="w-16 h-16 md:w-20 md:h-20 lg:w-28 lg:h-28 3xl:h-36 3xl:w-36 rounded-full" alt="Profile" />
           <p className="font-poppins text-lg mb-0">{userProfile?.name}</p>
           <p className="text-[#747688] text-xs 2xl:text-G 2xl:text-base mt-0">{userProfile?.username}</p>
           <div className="flex justify-center">

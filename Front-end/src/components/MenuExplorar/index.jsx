@@ -28,13 +28,13 @@ const MenuExplorar = () => {
     };
 
     return(
-        <div id="container-explorar" className='mp:ml-5 md:ml-[6.5rem] lg:mt-[6.8rem] lg:ml-1 xl:ml-14 2xl:ml-12  mb-10'>
-            <p id="titulo-explorar" className='font-poppins font-medium mp:text-sm ml-3 text-base sm:text-lg sm:ml-6 2xl:text-2xl md:text-xl  text-[#363636]'>Explorar</p>
-            <div id="titulo-itens-explorar" className='flex  md:ml-4 items-center ml-2 mr-7 justify-center mp:text-sm mp:gap-8  mp:mt-4 mp:mb-6 mp:py-2 mp:px-1  shadow-md rounded-md lg:gap-3 2xl:w-full '>
+        <div id="container-explorar" className='w-full lg:mt-[7.2rem] md:ml-24 lg:-ml-3  2xl:ml-10 3xl:-ml-10 3xl:mt-32  mb-10'>
+            <p id="titulo-explorar" className='font-poppins font-medium text-sm ml-7 md:ml-10 sm:text-base sm:ml-6 2xl:text-lg 3xl:text-xl  text-[#363636]'>Explorar</p>
+            <div id="titulo-itens-explorar" className='flex items-center shadow-md rounded-md justify-center 3xl:gap-14 mr-20  text-sm gap-8  mt-4 mb-6 py-2 px-1  w-[85%] ml-5 md:w-[77%] md:ml-10 lg:w-[81%] 3xl:w-[94%] lg:gap-3  '>
                 {['Usuários', 'Grupos', 'Temas'].map((item, index) => (
                         <p
                         key={index}
-                        className={`${activeIndex === index ? 'text-[#000]' : 'text-[#909090]'} cursor-pointer font-poppins text-xs mm:text-sm sm:text-base lg:text-sm 2xl:text-base`}
+                        className={`${activeIndex === index ? 'text-[#000]' : 'text-[#909090]'} cursor-pointer font-poppins text-xs mm:text-sm sm:text-base lg:text-sm 2xl:text-base 3xl:text-lg`}
                         onClick={() => escolherTipo(index)}
                         >
                         {item}
@@ -42,7 +42,7 @@ const MenuExplorar = () => {
                 ))}
             </div>
                 {activeIndex === 0 && (
-                    <div id="itens-explorar" className='md:ml-2 '>
+                    <div id="itens-explorar" className='ml-3 w-[94%] md:w-[81%] md:ml-8 lg:w-[94%] 2xl:w-[82%] 3xl:w-[94%] '>
                         <p id="titulo-item-explorar" className="hidden">Usuários</p>
                         <div id="div-tipos-explorar" className='gap-3 flex flex-col'>
                          {dataUser.map((user, index)=>{
