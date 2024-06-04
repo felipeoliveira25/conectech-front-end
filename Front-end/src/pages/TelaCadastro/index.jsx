@@ -68,7 +68,7 @@ const TelaCadastro = () => {
             setUser(newUser)
             console.log(newUser)
         }
-    })
+    },[newUser])
 
     const integracaoAPI = (user) => {
         axios.post('http://localhost:8080/users', {
@@ -81,7 +81,6 @@ const TelaCadastro = () => {
         .then(response => {
             // Extrair o ID do usuário retornado do JSON
             const userId = response.data.id;
-            console.log(response.data);
             
             // Armazenar as informações do usuário no sessionStorage
             localStorage.setItem('userId', userId);
@@ -89,7 +88,7 @@ const TelaCadastro = () => {
             localStorage.setItem('userEmail', user.email);
             
             notifySucess('Conta criada com sucesso!');
-            
+            console.log(response.data);
     
             setTimeout(() => {
                 navigate('/interesses');
@@ -100,6 +99,7 @@ const TelaCadastro = () => {
             console.error('Erro ao criar a conta: ', error);
         });
     };
+    
     
     return(
         <>

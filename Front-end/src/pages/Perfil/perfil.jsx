@@ -13,82 +13,82 @@ import {
 } from '../../services/userService';
 
 const Perfil = () => {
-  //O id do usuário logado é o id do usuário que está acessando o perfil e vai ser substituido pelo do session storage
-  const userId = localStorage.getItem('userId'); // Substitute with the actual user ID
-  console.log(userId);
-  const navigate = useNavigate();
-  const [activeIndex, setActiveIndex] = useState(0);
-  const [userProfile, setUserProfile] = useState(null);
-  const [profileImage, setProfileImage] = useState(null);
-
-  useEffect(() => {
-    const loadUserProfile = async () => {
-      try {
-        const response = await getUserById(userId);
-        setUserProfile(response.data);
-
-        const imageResponse = await getUserImage(userId);
-        if (imageResponse.status === 200) {
-          const imageBlob = new Blob([imageResponse.data], { type: 'image/jpeg' });
-          const imageUrl = URL.createObjectURL(imageBlob);
-          setProfileImage(imageUrl);
-        } else {
-          throw new Error('No image found');
+    //O id do usuário logado é o id do usuário que está acessando o perfil e vai ser substituido pelo do session storage
+    const userId = localStorage.getItem('userId'); // Substitute with the actual user ID
+    console.log(userId);
+    const navigate = useNavigate();
+    const [activeIndex, setActiveIndex] = useState(0);
+    const [userProfile, setUserProfile] = useState(null);
+    const [profileImage, setProfileImage] = useState(null);
+  
+    useEffect(() => {
+      const loadUserProfile = async () => {
+        try {
+          const response = await getUserById(userId);
+          setUserProfile(response.data);
+  
+          const imageResponse = await getUserImage(userId);
+          if (imageResponse.status === 200) {
+            const imageBlob = new Blob([imageResponse.data], { type: 'image/jpeg' });
+            const imageUrl = URL.createObjectURL(imageBlob);
+            setProfileImage(imageUrl);
+          } else {
+            throw new Error('No image found');
+          }
+        } catch (error) {
+          console.error('Error loading user profile:', error);
         }
-      } catch (error) {
-        console.error('Error loading user profile:', error);
-      }
-    };
-
-    loadUserProfile();
-  }, [userId]);
-
-  const handleFollow = async () => {
-    try {
-      await followUser(currentUserId, userId);
-      // Atualize o estado ou recarregue os dados
-    } catch (error) {
-      console.error('Error following user:', error);
-    }
-  };
-
-  const handleUnfollow = async () => {
-    try {
-      await unfollowUser(currentUserId, userId);
-      // Atualize o estado ou recarregue os dados
-    } catch (error) {
-      console.error('Error unfollowing user:', error);
-    }
-  };
-
-  const handleAddInterest = async (interestName) => {
-    try {
-      await addInterestToUser(userId, interestName);
-      // Atualize o estado ou recarregue os dados
-    } catch (error) {
-      console.error('Error adding interest:', error);
-    }
-  };
-
-  const handleFileChange = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
+      };
+  
+      loadUserProfile();
+    }, [userId]);
+  
+    const handleFollow = async () => {
       try {
-        await uploadUserImage(userId, file);
+        await followUser(currentUserId, userId);
         // Atualize o estado ou recarregue os dados
       } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('Error following user:', error);
       }
-    }
-  };
-
-  const goToHomePage = () => {
-    navigate('/home');
-  };
-
-  const escolherTipo = (index) => {
-    setActiveIndex(index);
-  };
+    };
+  
+    const handleUnfollow = async () => {
+      try {
+        await unfollowUser(currentUserId, userId);
+        // Atualize o estado ou recarregue os dados
+      } catch (error) {
+        console.error('Error unfollowing user:', error);
+      }
+    };
+  
+    const handleAddInterest = async (interestName) => {
+      try {
+        await addInterestToUser(userId, interestName);
+        // Atualize o estado ou recarregue os dados
+      } catch (error) {
+        console.error('Error adding interest:', error);
+      }
+    };
+  
+    const handleFileChange = async (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        try {
+          await uploadUserImage(userId, file);
+          // Atualize o estado ou recarregue os dados
+        } catch (error) {
+          console.error('Error uploading image:', error);
+        }
+      }
+    };
+  
+    const goToHomePage = () => {
+      navigate('/home');
+    };
+  
+    const escolherTipo = (index) => {
+      setActiveIndex(index);
+    };
 
   return (
     <div className="min-w-screen min-h-screen bg-[#fbfbfb] flex flex-col">

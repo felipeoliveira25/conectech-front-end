@@ -1,42 +1,64 @@
-import dataPost from "../../../postsForum.json"
+
 import { useNavigate } from "react-router-dom";
 import DoneOutlinedIcon from '@mui/icons-material/DoneOutlined';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 
 const DestaquesForum = () => {
     const navigate = useNavigate();
+    const [posts, setPosts] = useState([]);
+    const [addUserState, setAddUserState] = useState([]);
+    const [curtidas, setCurtidas] = useState([]);
+
+    useEffect(() => {
+        fetchPosts();
+    }, []);
+
     const goToForum = () => {
-        navigate('/forum')
-    }
-    const [addUserState, setAddUserState] = useState({});
-    const toggleAddUser = (itemId) => {
-        setAddUserState(prevState => ({
-            ...prevState,
-            [itemId]: !prevState[itemId]
-        }));
+        navigate('/forum');
     };
-  
-    const [countComents, setCountComents] = useState(12)
 
-    const [curtidas, setCurtidas] = useState(dataPost.map(() => false));
-    const [numCurtidas, setNumCurtidas] = useState(dataPost.map(() => 25));
-    
-    // Função para lidar com a ação de curtir/descurtir um post
-    const curtirEDescurtirPost = (postId) => {
-        setCurtidas(prevCurtidas => {
-            const updatedCurtidas = [...prevCurtidas];
-            updatedCurtidas[postId] = !updatedCurtidas[postId]; // Inverte o estado de curtida do post
-            return updatedCurtidas;
-        });
+    const fetchPosts = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/posts');
+            const postData = await response.json();
 
-        // Atualiza o número de curtidas do post
-        setNumCurtidas(prevNumCurtidas => {
-            const updatedNumCurtidas = [...prevNumCurtidas];
-            updatedNumCurtidas[postId] += curtidas[postId] ? -1 : 1; // Incrementa ou decrementa o número de curtidas dependendo do estado anterior
-            return updatedNumCurtidas;
-        });
+            const postsWithAuthorDetails = await Promise.all(postData.map(async (post) => {
+                const authorResponse = await fetch(`http://localhost:8080/users/${post.authorId}`);
+                const authorData = await authorResponse.json();
+
+                const imageResponse = await fetch(`http://localhost:8080/users/${post.authorId}/image`);
+                const imageBlob = await imageResponse.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                return {
+                    ...post,
+                    authorName: authorData.name,
+                    fotoOrganizador: imageUrl,
+                    authorInterests: authorData.interests
+                };
+            }));
+
+            setPosts(postsWithAuthorDetails);
+            setAddUserState(postsWithAuthorDetails.map(() => false));
+            setCurtidas(postsWithAuthorDetails.map(() => false));
+        } catch (error) {
+            console.error('Error fetching posts or author details:', error);
+        }
     };
+
+    const toggleAddUser = (index) => {
+        const newUserState = [...addUserState];
+        newUserState[index] = !newUserState[index];
+        setAddUserState(newUserState);
+    };
+
+    const curtirEDescurtirPost = (index) => {
+        const newCurtidas = [...curtidas];
+        newCurtidas[index] = !newCurtidas[index];
+        setCurtidas(newCurtidas);
+    };
+
     
     return(
         <div className=" md:ml-28 mt-8 lg:-mt-10 xl:-mt-14 2xl:-mt-10 3xl:-mt-14 lg:ml-[6.5rem] flex flex-col items-center justify-center overflow-x-hidden">
@@ -45,13 +67,13 @@ const DestaquesForum = () => {
                 <p className="mp:text-[10px] mm:text-[11px] sm:text-xs  md:mr-3 sm:mr-0 2xl:text-sm 3xl:text-base  text-[#747688] font-poppins cursor-pointer" onClick={goToForum}>Ver mais</p>
             </div>
             <div className="grid w-[95%] -ml-3 grid-cols-1 gap-4 mt-3 md:w-[100%] xl:w-[93%] 2xl:w-[90%] 3xl:w-[80%] 3xl:mr-56 3xl:mt-6 2xl:mr-20 xl:mr-8  md:ml-3 ">
-                {dataPost.map((post, index) => {
+                {posts.map((post, index) => {
                     return(
                         <div className="grid grid-cols-4 gap-3 bg-[#ffffff] mb-2 rounded-xl items-center justify-center shadow-md md:w-[90%]  mp:ml-4 mp:mr-7 mg:mr-9 px-2 py-3 xl:w-[95%] " key={index}>
                             <div className="col-span-4 flex items-center justify-between">
                                 <div id="div-info-user" className=" flex items-center  gap-2 md:gap-4 ">
-                                    <img className="rounded-full object-cover w-6 h-6 md:w-10 md:h-10 3xl:w-16 3xl:h-16" src={post.imagemPerfil}/>
-                                    <p className="font-poppins text-[0.63rem] mm:text-sm md:text-base 3xl:text-xl">{post.nomeUsuario}</p>
+                                    <img className="rounded-full object-cover w-6 h-6 md:w-10 md:h-10 3xl:w-16 3xl:h-16" src={post.fotoOrganizador}/>
+                                    <p className="font-poppins text-[0.63rem] mm:text-sm md:text-base 3xl:text-xl">{post.authorName}</p>
                                     <span className="text-[0.6rem] mm:text-[0.65rem] md:text-xs lg:text-sm font-poppins bg-[#4A91A5] text-[#fff] py-[0.2rem] px-[0.3rem] border-none rounded-2xl 3xl:text-base">{post.tagPost}</span>
                                 </div>
                                 {addUserState[index]
@@ -66,7 +88,7 @@ const DestaquesForum = () => {
                            
                                     
                                 
-                            <p className="col-span-4 text-[12px] mm:text-[13px] sm:text-[15px] md:text-[18px] xl:text-lg 3xl:text-xl">{post.descricaoPost}</p>
+                            <p className="col-span-4 text-[12px] mm:text-[13px] sm:text-[15px] md:text-[18px] xl:text-lg 3xl:text-xl">{post.description}</p>
                             
                             <div className="flex col-span-4 items-center justify-between">
                                 <div className=" flex gap-4 ">
@@ -90,7 +112,7 @@ const DestaquesForum = () => {
                                                 </svg>
                                             }
                                             
-                                            <p className="text-xs xl:text-sm 3xl:text-base">{numCurtidas[index]}</p>
+                                            <p className="text-xs xl:text-sm 3xl:text-base">{post.likes}</p>
                                         </div>
                                         <div className="mp:flex mp:justify-center mp:items-center">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
@@ -98,7 +120,7 @@ const DestaquesForum = () => {
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.087.16 2.185.283 3.293.369V21l4.076-4.076a1.526 1.526 0 0 1 1.037-.443 48.282 48.282 0 0 0 5.68-.494c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0 0 12 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018Z" />
                                         </svg>
 
-                                            <p className="text-xs xl:text-sm 3xl:text-base">{countComents}</p>
+                                            <p className="text-xs xl:text-sm 3xl:text-base">{post.commentsCount}</p>
                                         </div>
                                     </div>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 

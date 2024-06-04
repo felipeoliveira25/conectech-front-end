@@ -1,25 +1,37 @@
-
-
-
 import useUserContext from '../../hooks/useUserContext'
-
+import axios from 'axios';
 import Sidebar from '../../components/Sidebar'
 import HeaderHome from '../../components/HeaderHome/HeaderHome';
 import EventosProximos from '../../components/EventosProximos';
 import DestaquesForum from '../../components/DestaquesForum';
 import MenuExplorar from '../../components/MenuExplorar';
 import {useNavigate} from 'react-router-dom'
+import { useState, useEffect } from 'react';
 
 
 const Home = ()=>{
-    const {user} = useUserContext();
+    const { user } = useUserContext();
     const navigate = useNavigate();
-    const goToPerfilPage = () => {
-        navigate('/perfil')
-    }
-   
+    const [eventos, setEventos] = useState([]);
 
-    console.log(user)
+    const goToPerfilPage = () => {
+        navigate('/perfil');
+    };
+
+    useEffect(() => {
+        const fetchEventos = async () => {
+            try {
+                const response = await axios.get('/api/eventos');
+                setEventos(response.data);
+            } catch (error) {
+                console.error('Error fetching events:', error);
+            }
+        };
+
+        fetchEventos();
+    }, []);
+
+    console.log(user);
     return(
         <div className='w-full min-h-screen overflow-x-hidden flex bg-[#fbfbfb] '>
             <Sidebar/>
@@ -30,7 +42,7 @@ const Home = ()=>{
             </HeaderHome>
             <div id='container-home' className='lg:grid lg:grid-cols-4 lg:grid-rows-2 '>
                 <div className='col-span-3 lg:row-start-1 lg:row-end-2 '>
-                    <EventosProximos/>
+                    <EventosProximos eventos={eventos}/>
                 </div>
                 <div className='col-span-3 lg:row-start-2 lg:row-end-3  mb-8'>
                     <DestaquesForum/>

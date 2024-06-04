@@ -1,15 +1,52 @@
-import { useState } from 'react';
-import data from '../../../events.json'
+import { useState, useEffect } from 'react';
+
 import Evento from "../Evento";
 import {useNavigate} from 'react-router-dom'
 
 
 const EventosProximos = () => {
     const navigate = useNavigate();
+    const [eventosVisiveis, setEventosVisiveis] = useState([]);
+
+    useEffect(() => {
+        fetchEventsWithAuthorDetails();
+    }, []);
+
+    const fetchEventsWithAuthorDetails = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/events');
+            const eventsData = await response.json();
+
+            const eventsWithAuthorDetails = await Promise.all(eventsData.slice(0, 3).map(async (event) => {
+                const authorResponse = await fetch(`http://localhost:8080/users/name/${event.authorName}`);
+                const authorData = await authorResponse.json();
+
+                const imageResponse = await fetch(`http://localhost:8080/users/${authorData.id}/image`);
+                const imageBlob = await imageResponse.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                const eventImageResponse = await fetch(`http://localhost:8080/events/${event.id}/image`);
+                const eventImageBlob = await eventImageResponse.blob();
+                const eventImageUrl = URL.createObjectURL(eventImageBlob);
+
+
+                return {
+                    ...event,
+                    authorName: authorData.name,
+                    fotoOrganizador: imageUrl,
+                    eventImageUrl: eventImageUrl
+                };
+            }));
+
+            setEventosVisiveis(eventsWithAuthorDetails);
+        } catch (error) {
+            console.error('Error fetching events or author details:', error);
+        }
+    };
+
     const goToTelaEventos = () => {
-        navigate('/eventos')
-    }
-    const [eventosVisiveis, setEventosVisiveis] = useState(data.slice(0, 3))
+        navigate('/eventos');
+    };
     return(
         <div className='mt-24 w-full  sm:w-full lg:mt-28  xl:ml-16  md:ml-20 3xl:ml-10 3xl:mt-32  flex flex-col items-center justify-center'>
             <div className='flex w-[90%] md:w-[80%] md:-ml-8 items-center mg:-ml-0 2xl:-ml-14  '>
@@ -23,13 +60,13 @@ const EventosProximos = () => {
                             <div className='col-span-6 lg:col-span-6 xl:col-span-2 flex' key={evento.id}>
                                  <Evento 
                                     titulo={evento.title} 
-                                    imagem={evento.image} 
-                                    data={evento.data} 
-                                    local={evento.local}
-                                    organizador={evento.organizador}
-                                    totalParticipantes={evento.total_participantes}
-                                    descricaoEvento={evento.descricao}
-                                    fotoOrganizador={evento.foto_organizador}/>
+                                    imagem={evento.eventImageUrl} 
+                                    data={evento.date} 
+                                    local={evento.location}
+                                    organizador={evento.authorName}
+                                    totalParticipantes={evento.participantsCount}
+                                    descricaoEvento={evento.description}
+                                    fotoOrganizador={evento.fotoOrganizador}/>
                             </div>
                                
                         )

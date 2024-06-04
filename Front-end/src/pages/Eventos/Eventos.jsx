@@ -3,7 +3,7 @@ import Sidebar from '../../components/Sidebar'
 import HeaderHome from "../../components/HeaderHome/HeaderHome"
 import { useState, useEffect } from 'react'
 import {useNavigate} from 'react-router-dom'
-import data from '../../../events.json'
+import axios from 'axios';
 import Evento from "../../components/Evento"
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -11,30 +11,117 @@ import DialogActions from '@mui/material/DialogActions';
 
 
 const Eventos = () => {
-    const [open, setOpen] = useState(false)
-    const handleClickOpen = () => {
-        setOpen(true);
-    }
-    const handleClose = () => {
-        setOpen(false)
-    }
-    const [meusInteresses, setMeusInteresses] = useState([])
-      useEffect(() => {
-        const interesses = localStorage.getItem('meusInteresses');
-        if(interesses){
-            setMeusInteresses(JSON.parse(interesses))
-        }
-        
-        
-      }, [])
+    const [eventos, setEventos] = useState([]);
+    const [meusInteresses, setMeusInteresses] = useState([]);
     const [activeIndex, setActiveIndex] = useState(null);
+    const [open, setOpen] = useState(false);
+    const [newEvent, setNewEvent] = useState({
+        title: '',
+        description: '',
+        location: ''
+    });
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [isCreating, setIsCreating] = useState(false); // Estado para controlar se o evento está sendo criado
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        fetchEventsWithAuthorDetails();
+        const interesses = localStorage.getItem('meusInteresses');
+        if (interesses) {
+            setMeusInteresses(JSON.parse(interesses));
+        }
+    }, []);
+
+    const fetchEventsWithAuthorDetails = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/events');
+            const eventsData = await response.json();
+
+            const eventsWithAuthorDetails = await Promise.all(eventsData.map(async (event) => {
+                const authorResponse = await fetch(`http://localhost:8080/users/name/${event.authorName}`);
+                const authorData = await authorResponse.json();
+
+                const imageResponse = await fetch(`http://localhost:8080/users/${authorData.id}/image`);
+                const imageBlob = await imageResponse.blob();
+                const imageUrl = URL.createObjectURL(imageBlob);
+
+                const eventImageResponse = await fetch(`http://localhost:8080/events/${event.id}/image`);
+                const eventImageBlob = await eventImageResponse.blob();
+                const eventImageUrl = URL.createObjectURL(eventImageBlob);
+
+                return {
+                    ...event,
+                    authorName: authorData.name,
+                    fotoOrganizador: imageUrl,
+                    eventImageUrl: eventImageUrl
+                };
+            }));
+
+            setEventos(eventsWithAuthorDetails);
+        } catch (error) {
+            console.error('Error fetching events or author details:', error);
+        }
+    };
+
+    const handleCreateEvent = async () => {
+        try {
+            setIsCreating(true); // Desabilitar o botão durante a criação
+            console.log('Creating event with data:', newEvent);
+            const response = await axios.post(`http://localhost:8080/events/${localStorage.getItem('userId')}/create`, newEvent);
+            const eventId = response.data.id; // Ensure the response includes the event ID
+            console.log('Event created with ID:', eventId);
+    
+            if (selectedFile) {
+                const formData = new FormData();
+                formData.append('image', selectedFile);
+                console.log('Uploading image for event:', eventId);
+    
+                const uploadResponse = await axios.post(`http://localhost:8080/events/${eventId}/uploadImage`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' }
+                });
+                console.log('Image uploaded successfully', uploadResponse.data);
+            }
+    
+            fetchEventsWithAuthorDetails();
+            handleClose();
+        } catch (error) {
+            console.error('Error creating event:', error);
+            if (error.response) {
+                console.error('Response data:', error.response.data);
+                console.error('Response status:', error.response.status);
+                console.error('Response headers:', error.response.headers);
+            }
+        } finally {
+            setIsCreating(false); // Reabilitar o botão após a criação
+        }
+    };
+    
+    
+    
+
     const escolherTipo = (index) => {
         setActiveIndex(index);
-      };
-    const navigate = useNavigate();
+    };
+
     const goToHomePage = () => {
-        navigate('/home')
-    }
+        navigate('/home');
+    };
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    const goToEventoDetalhes = (evento) => {
+        navigate('/evento-detalhes', { state: { evento } });
+    };
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
     return(
         <div className='w-screen min-h-screen flex'>
         
@@ -63,17 +150,18 @@ const Eventos = () => {
                                             
                     </div>
                     <div className='grid grid-cols-6 xl:grid-cols-8 gap-3 mt-3 lg:mt-10 -ml-5 mm:-ml-4  w-full lg:w-[90%] lg:-ml-16 2xl:mb-10'>
-                        {data.map((evento) => (
+                        {eventos.map((evento) => (
                                 <div className='col-span-6  xl:col-span-2 flex ' key={evento.id}>
                                     <Evento 
                                         titulo={evento.title} 
-                                        imagem={evento.image} 
-                                        data={evento.data} 
-                                        local={evento.local}
-                                        organizador={evento.organizador}
-                                        totalParticipantes={evento.total_participantes}
-                                        descricaoEvento={evento.descricao}
-                                        fotoOrganizador={evento.foto_organizador}/>
+                                        imagem={evento.eventImageUrl} 
+                                        data={evento.date} 
+                                        local={evento.location}
+                                        organizador={evento.authorName}
+                                        totalParticipantes={evento.participantsCount}
+                                        descricaoEvento={evento.description}
+                                        fotoOrganizador={evento.fotoOrganizador}
+                                        onClick={() => goToEventoDetalhes(evento)}/>
                                 </div>
                                 
                             )
@@ -87,38 +175,54 @@ const Eventos = () => {
 
                     </button>
                     <Dialog
-                        open={open}
-                        onClose={handleClose}
-                        aria-labelledby="alert-dialog-title"
-                        aria-describedby="alert-dialog-description">
-
-                        <DialogActions className='flex flex-col bg-[#FFFFFF] gap-4 items-center justify-center'>
-                            <div onClick={handleClose} className='flex flex-col bg-[#F3F3F3] px-1 py-1 gap-2'>
-                                <div className='flex gap-2 items-center'>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
-                                        className="size-6 text-[#074261]">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                                    </svg>
-                                    <p className='font-poppins font-medium text-sm'>Criar evento privado</p>
-                                </div>
-                                <p className='text-[#7D7D7D] text-xs font-poppins'>
-                                    Somente convidados verão esse evento. O organizador pode optar por deixar os convidados convidarem outras pessoas.
-                                </p>
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description">
+                    <DialogActions className='flex flex-col bg-[#FFFFFF] gap-4 items-center justify-center'>
+                        <div className='flex flex-col bg-[#F3F3F3] px-1 py-1 gap-2'>
+                            <div className='flex gap-2 items-center'>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-6">
+                                    <path fillRule="evenodd" d="M4.5 5.25A3.75 3.75 0 0 1 8.25 1.5h7.5a3.75 3.75 0 0 1 3.75 3.75v13.5a3.75 3.75 0 0 1-3.75 3.75h-7.5a3.75 3.75 0 0 1-3.75-3.75V5.25ZM8.25 3A2.25 2.25 0 0 0 6 5.25v13.5A2.25 2.25 0 0 0 8.25 21h7.5A2.25 2.25 0 0 0 18 18.75V5.25A2.25 2.25 0 0 0 15.75 3h-7.5ZM9 7.5h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1 0-1.5Zm0 3h6a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1 0-1.5Zm6 3a.75.75 0 0 1 0 1.5H9a.75.75 0 0 1 0-1.5h6Z" clipRule="evenodd" />
+                                </svg>
+                                <p className='text-base text-[#000000] font-poppins font-medium'>Adicionar evento</p>
                             </div>
-                            <div onClick={handleClose} className='flex flex-col bg-[#F3F3F3] px-1 py-1 w-full gap-2 mr-2 '>
-                                <div className='flex gap-2 items-center '>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" 
-                                        className="size-6 text-[#074261]">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="m20.893 13.393-1.135-1.135a2.252 2.252 0 0 1-.421-.585l-1.08-2.16a.414.414 0 0 0-.663-.107.827.827 0 0 1-.812.21l-1.273-.363a.89.89 0 0 0-.738 1.595l.587.39c.59.395.674 1.23.172 1.732l-.2.2c-.212.212-.33.498-.33.796v.41c0 .409-.11.809-.32 1.158l-1.315 2.191a2.11 2.11 0 0 1-1.81 1.025 1.055 1.055 0 0 1-1.055-1.055v-1.172c0-.92-.56-1.747-1.414-2.089l-.655-.261a2.25 2.25 0 0 1-1.383-2.46l.007-.042a2.25 2.25 0 0 1 .29-.787l.09-.15a2.25 2.25 0 0 1 2.37-1.048l1.178.236a1.125 1.125 0 0 0 1.302-.795l.208-.73a1.125 1.125 0 0 0-.578-1.315l-.665-.332-.091.091a2.25 2.25 0 0 1-1.591.659h-.18c-.249 0-.487.1-.662.274a.931.931 0 0 1-1.458-1.137l1.411-2.353a2.25 2.25 0 0 0 .286-.76m11.928 9.869A9 9 0 0 0 8.965 3.525m11.928 9.868A9 9 0 1 1 8.965 3.525" />
-                                    </svg>
-                                    <p className='font-poppins font-medium text-sm'>Criar evento público</p>
-                                </div>
-                                <p className='text-[#7D7D7D] text-xs font-poppins'>
-                                    Qualquer pessoas pode ver este evento e procurá-lo mesmo se vocês não se seguirem.
-                                </p>
-                            </div>
-                        </DialogActions>
-                    </Dialog>
+                            <input
+                                type='text'
+                                className='w-[300px] bg-[#FFFFFF] border-none outline-none rounded-md h-8 p-2 text-sm font-poppins'
+                                placeholder='Nome do evento'
+                                value={newEvent.title}
+                                onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+                            />
+                            <input
+                                type='text'
+                                className='w-[300px] bg-[#FFFFFF] border-none outline-none rounded-md h-8 p-2 text-sm font-poppins'
+                                placeholder='Localização'
+                                value={newEvent.location}
+                                onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+                            />
+                            <textarea
+                                className='w-[300px] bg-[#FFFFFF] border-none outline-none rounded-md h-24 p-2 text-sm font-poppins resize-none'
+                                placeholder='Descrição'
+                                value={newEvent.description}
+                                onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+                            />
+                            <input
+                                type='file'
+                                accept='image/*'
+                                onChange={handleFileChange}
+                            />
+                        </div>
+                        <div className='flex justify-between w-full'>
+                            <button onClick={handleClose} className='bg-[#FF0000] text-[#FFFFFF] font-poppins px-4 py-2 rounded-md'>
+                                Cancelar
+                            </button>
+                            <button onClick={handleCreateEvent} className='bg-[#4A91A5] text-[#FFFFFF] font-poppins px-4 py-2 rounded-md' disabled={isCreating}>
+                                {isCreating ? 'Criando...' : 'Criar Evento'}
+                            </button>
+                        </div>
+                    </DialogActions>
+                </Dialog>
             </div>
         
            

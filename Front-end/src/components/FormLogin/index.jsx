@@ -8,11 +8,7 @@ import { useState } from 'react';
 import {useNavigate} from 'react-router-dom'
 import {ToastContainer, toast} from 'react-toastify'
 import "react-toastify/dist/ReactToastify.css";
-
 import {useForm} from 'react-hook-form'
-import * as yup from 'yup'
-
-
 import ImagemLogo from '../ImagemLogo';
 import axios from 'axios';
 import useUserContext from '../../hooks/useUserContext';
@@ -20,7 +16,6 @@ import useUserContext from '../../hooks/useUserContext';
 
 
 function Form() {
-
     const notifySucess = (mensagem) => {
         toast.success(mensagem, {
             position:"top-right"
@@ -45,13 +40,6 @@ function Form() {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const {setUser, user} = useUserContext();
-    
-
- 
-
-  
-
-//   
 
     const {
         register,
@@ -66,6 +54,9 @@ function Form() {
         .then(response => {
             notifySucess("Entrando...")
             console.log(response.data)
+            localStorage.setItem('userId', userId);
+            localStorage.setItem('userName', user.name);
+            localStorage.setItem('userEmail', user.email);
             setUser(response.data)
             setTimeout(() => {
                 navigate('/home')
